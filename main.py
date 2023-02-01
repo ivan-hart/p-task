@@ -32,12 +32,13 @@ cars = []
 lights = []
 
 font = pygame.font.Font(pygame.font.get_default_font(), 18)
-timer = Timer(font, Color.black)
+timerPos = (535, 50)
+timer = Timer(timerPos, font, Color.black)
 
 button_font = pygame.font.Font(pygame.font.get_default_font(), 50)
 
-incrementButton = Button((530, 225), (50, 50), Color.green, button_font, "+", Color.black)
-decrementButton = Button((620, 225), (50, 50), Color.blue, button_font, "-", Color.black)
+incrementButton = Button((530, timerPos[1] + 30), (50, 50), Color.green, button_font, "+", Color.black, (540, timerPos[1] + 30))
+decrementButton = Button((620, timerPos[1] + 30), (50, 50), Color.blue, button_font, "-", Color.black, (640, timerPos[1] + 30))
 
 def build_object(index):
     return Car(Lane.car_pos[index], Lane.dir[index], 1, image)
@@ -45,7 +46,7 @@ def build_object(index):
 
 def build_object_lists():
     for i in range(4):
-        light = Light(Lane.light_pos[i], Lane.dir[i], Color.red if i % 2 != 0 else Color.green)
+        light = Light(Lane.light_pos[i], Lane.dir[i], Color.red if i % 2 == 0 else Color.green)
         lights.append(light)
         cars.append(build_object(i))
 
@@ -55,7 +56,7 @@ def check_off_screen(car):
 
 
 def check_time():
-    return True if time > max_time else False
+    return True if time > timer.max_time else False
 
 
 def handle_key_input(event):

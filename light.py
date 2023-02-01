@@ -20,10 +20,9 @@ class Light(object):
             case 'u':
                 return car.posY > 336 and car.posY < 336 + 20
             case 'r':
-                return car.posX + 120 < 166 and car.posX > 166 - 120
+                return car.posX + 100 < 166 and car.posX + 100 > 166 - 20
             case 'd':
-                return car.posY + 120 < 166 and car.posY > 166
-        return RuntimeError
+                return car.posY < 166 and car.posY > 166 - 120
 
 
     def draw(self, WIN):
