@@ -10,7 +10,7 @@ from car import Car
 from light import Light
 from lane import Lane
 from button import Button
-from timer import Timer
+from increment import Increment
 
 pygame.init()
 pygame.font.init()
@@ -33,12 +33,17 @@ lights = []
 
 font = pygame.font.Font(pygame.font.get_default_font(), 18)
 timerPos = (535, 50)
-timer = Timer(timerPos, font, Color.black)
+timer = Increment(timerPos, font, "Light timer: ", 100, 500, Color.black)
 
 button_font = pygame.font.Font(pygame.font.get_default_font(), 50)
 
 incrementButton = Button((530, timerPos[1] + 30), (50, 50), Color.green, button_font, "+", Color.black, (540, timerPos[1] + 30))
 decrementButton = Button((620, timerPos[1] + 30), (50, 50), Color.blue, button_font, "-", Color.black, (640, timerPos[1] + 30))
+
+speedTextPos = (535, 150)
+speed = Increment(speedTextPos, font, "Car Speed: ", 0.1, 1, Color.black)
+carIncrementButton = Button((530, speedTextPos[1] + 30), (50, 50), Color.green, button_font, "+", Color.black, (540, speedTextPos[1] + 30))
+carDecrementButton = Button((620, speedTextPos[1] + 30), (50, 50), Color.blue, button_font, "-", Color.black, (640, speedTextPos[1] + 30))
 
 def build_object(index):
     return Car(Lane.car_pos[index], Lane.dir[index], 1, image)
@@ -56,7 +61,7 @@ def check_off_screen(car):
 
 
 def check_time():
-    return True if time > timer.max_time else False
+    return True if time > timer.max else False
 
 
 def handle_key_input(event):
@@ -64,19 +69,22 @@ def handle_key_input(event):
     global run
     match event.key:
         case pygame.K_DOWN:
-            timer.increment_timer
+            timer.decrement()
         case pygame.K_UP:
-            timer.decrement_timer()
+            timer.increment()
         case pygame.K_ESCAPE:
             run = False
 
 
 def mouse_click():
-    global max_time
     if incrementButton.hovered:
-        timer.increment_timer()
+        timer.increment()
     elif decrementButton.hovered:
-        timer.decrement_timer()
+        timer.decrement()
+    elif carIncrementButton.hovered:
+        speed.increment()
+    elif carDecrementButton.hovered:
+        speed.decrement()
 
 
 def mouse_hover(pos):
@@ -86,11 +94,21 @@ def mouse_hover(pos):
     elif decrementButton.hover(pos):
         decrementButton.hovered = True
         decrementButton.color = Color.light_green
+    elif carIncrementButton.hover(pos):
+        carIncrementButton.hovered = True
+        carIncrementButton.color = Color.light_green
+    elif carDecrementButton.hover(pos):
+        carDecrementButton.hovered = True
+        carDecrementButton.color = Color.light_green
     else:
         decrementButton.hovered = False
         decrementButton.color = Color.green
         incrementButton.hovered = False
         incrementButton.color = Color.green
+        carIncrementButton.hovered = False
+        carIncrementButton.color = Color.green
+        carDecrementButton.hovered = False
+        carDecrementButton.color = Color.green
 
 
 def render():
@@ -101,13 +119,17 @@ def render():
         lights[i].draw(WIN)
     pygame.draw.rect(WIN, Color.white, pygame.Rect(500, 0, 200, 500))
     timer.draw(WIN)
+    speed.draw(WIN)
     incrementButton.draw(WIN)
     decrementButton.draw(WIN)
+    carIncrementButton.draw(WIN)
+    carDecrementButton.draw(WIN)
 
 
 def update():
     global time
     for i in range(4):
+        cars[i].max_speed = speed.max
         if check_time():
             for l in lights:
                 l.change()
