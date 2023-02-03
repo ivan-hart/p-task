@@ -33,7 +33,7 @@ lights = []
 
 font = pygame.font.Font(pygame.font.get_default_font(), 18)
 timerPos = (535, 50)
-timer = Increment(timerPos, font, "Light timer: ", 100, 500, Color.black)
+timer = Increment(timerPos, font, "Light timer: ", 1, 5, Color.black)
 
 button_font = pygame.font.Font(pygame.font.get_default_font(), 50)
 
@@ -61,7 +61,7 @@ def check_off_screen(car):
 
 
 def check_time():
-    return True if time > timer.max else False
+    return True if time > timer.max * 100 else False
 
 
 def handle_key_input(event):
